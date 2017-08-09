@@ -38,6 +38,7 @@ use Sulu\Component\Webspace\Url\ReplacerInterface;
 use Sulu\Component\Webspace\Webspace;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 
 class ContentRouteProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -774,5 +775,17 @@ class ContentRouteProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $routes);
         $route = $routes->getIterator()->current();
         $this->assertEquals($pageBridge->reveal(), $route->getDefaults()['structure']);
+    }
+
+    public function testGetRouteByRouteName()
+    {
+        $collection = new RouteCollection();
+        $route = new Route('/dummy');
+        $collection->add('dummy', $route);
+        $this->contentRouteProvider->setRouteCollection($collection);
+
+        // Test the route provider
+        $this->assertEquals($route, $this->contentRouteProvider->getRouteByName('dummy'));
+        $this->assertNull($this->contentRouteProvider->getRouteByName('unknown'));
     }
 }
